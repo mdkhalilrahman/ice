@@ -2,6 +2,14 @@
 
 class admin extends CI_Controller{
 
+public function __construct(){
+
+    parent::__construct();
+    if( $this->session->userdata('id') )
+    return redirect('admin/adminView');
+    
+  }
+
 	public function index(){
 		$this->load->view('admin/login');
 	}
@@ -20,8 +28,9 @@ class admin extends CI_Controller{
 
 			$email = $this->input->post('email');
 			$pass = $this->input->post('pass');
-
-			if($this->adminModel->login($email,$pass)){
+			$user_id = $this->adminModel->login($email,$pass);
+			if($user_id){
+				$this->session->set_userdata('id',$user_id);
 				$this->session->set_flashdata('success','login successfull...');
 				redirect('admin/adminView');
 			}else{
